@@ -24,40 +24,37 @@ def list_rules():
     if (request.status_code == "200" or request.status_code == 200):
         results = request.json()['result']
         rules = []
-        for result in results:
-            if request.json()['success']:
+        if request.json()['success']:
+            for result in results:
                 if result["matchers"][0]["type"] != "all":
                     result_type = "normal"
                     result_get_email = f"get: {result['matchers'][0]['value']}"
-                else:
-                    result_type = "catch-all"
-                    result_get_email = "catch-all"
-                
-                if result['actions'][0]['type'] != "drop":
-                    result_action = f"{result['actions'][0]['type']}: {result['actions'][0]['value'][0]}"
-                else:
-                    result_action = "drop"
-                
-                if result['enabled']:
-                    result_enabled = "enabled"
-                else:
-                    result_enabled = "disabled"
 
-                if result['name'] == "":
-                    result_name = "Unknown"
-                else:
-                    result_name = result['name']
+                    if result['actions'][0]['type'] != "drop":
+                        result_action = f"{result['actions'][0]['type']}: {result['actions'][0]['value'][0]}"
+                    else:
+                        result_action = "drop"
+                    
+                    if result['enabled']:
+                        result_enabled = "enabled"
+                    else:
+                        result_enabled = "disabled"
 
-                rules.append([
-                    result_name,
-                    result_type,
-                    result_get_email,
-                    result_action,
-                    result_enabled,
-                    result['tag'],
-                ])
-            else:
-                return ConnectionError, ConnectionError
+                    if result['name'] == "":
+                        result_name = "Unknown"
+                    else:
+                        result_name = result['name']
+
+                    rules.append([
+                        result_name,
+                        result_type,
+                        result_get_email,
+                        result_action,
+                        result_enabled,
+                        result['tag'],
+                    ])
+        else:
+            return ConnectionError, ConnectionError
         format = ["Name", "Type", "Catch", "Action", "Enabled"]
         end_result = ""
         iterate = 0
@@ -84,7 +81,9 @@ def programme():
           + '2) Create a new e-mail routing rule' + "\n"
           + '3) Update an existing e-mail routing rule' + "\n"
           + '4) Delete an e-mail routing rule' + "\n"
-          + '5) Exit this program')
+          + '5) Get the e-mail catch-all rule' + "\n"
+          + '6) Update the e-mail catch-all rule' + "\n"
+          + '7) Exit this program')
     option = input('Select your option: ')
     try:
         match int(option):
@@ -194,6 +193,7 @@ def programme():
                 action()
             case 3:
                 print('TO-DO: Update e-mail rules')
+                # To-Do
                 input("Press Enter to continue... ")
                 programme()
             case 4:
@@ -207,14 +207,6 @@ def programme():
                         try:
                             if (int(rule_del_option) == len(list_rule[1])+1):
                                 programme()
-                            elif (int(rule_del_option) > len(list_rule[1])+1):
-                                print("Incorrect option, try again")
-                                input("Press Enter to continue... ")
-                                rule_del()
-                            elif (int(rule_del_option) <= 0):
-                                print("Incorrect option, try again")
-                                input("Press Enter to continue... ")
-                                rule_del()
                             elif (int(rule_del_option) > 0 and int(rule_del_option) < len(list_rule[1])+1):
                                 request = requests.delete(f"https://api.cloudflare.com/client/v4/zones/{zone_id}/email/routing/rules/{list_rule[1][int(rule_del_option)-1]}",
                                                         headers=header_list)
@@ -241,6 +233,36 @@ def programme():
                 input("Press Enter to continue..." )
                 programme()
             case 5:
+                print('Getting the catch-all rule')
+                request = requests.get(f"https://api.cloudflare.com/client/v4/zones/{zone_id}/email/routing/rules/catch_all", headers=header_list)
+                result = request.json()['result']
+                if (request.status_code == "200" or request.status_code == 200):
+                    if request.json()['success']:
+                        if result['actions'][0]['type'] != "drop":
+                            result_action = f"{result['actions'][0]['type']}: {result['actions'][0]['value'][0]}"
+                        else:
+                            result_action = "drop"
+                                
+                        if result['enabled']:
+                            result_enabled = "enabled"
+                        else:
+                            result_enabled = "disabled"
+
+                        print(f'Catch-all rule: Action: {result_action}, Enabled: {result_enabled}')
+                        print('Done!')
+
+                    else:
+                        print('Error, try again')
+                else:
+                    print('Error, try again')
+                input("Press Enter to continue... ")
+                programme()
+            case 6:
+                print('TO-DO: Update catch-all e-mail rule')
+                # To-Do
+                input("Press Enter to continue... ")
+                programme()
+            case 7:
                 print('Exiting...')
                 exit()
             case _:
