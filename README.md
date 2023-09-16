@@ -19,6 +19,7 @@ If you create/update a rule and provide a destination address not used before, y
 ## To-Do:
 - [ ] Updating rules (catch-all and other, enabling, changing destination address)
 - [ ] Better way of storing secrets
+- [ ] Action: Send to a worker
 
 ## License
 This project is licensed under [The Unlicense](https://choosealicense.com/licenses/unlicense/)
