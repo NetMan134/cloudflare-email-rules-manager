@@ -4,6 +4,9 @@ A simple Cloudflare e-mail routing rules manager script written in Python (made 
 - Create new rules
 - Delete existing rules
 
+### 2024-11 update
+This script still works, and I sometimes use it, although I may switch from Cloudflare's solution in the future, and this may become abandoned (it's already been kind of abandoned for a year, but still working so...)
+
 ## Config
 You have to prepare your:
 - Global Cloudflare API key [here](https://dash.cloudflare.com/profile/api-tokens)<br>
@@ -19,7 +22,8 @@ If you create/update a rule and provide a destination address not used before, y
 ## To-Do:
 - [ ] Updating rules (catch-all and other, enabling, changing destination address)
 - [ ] Better way of storing secrets
-- [ ] Action: Send to a worker
+- [ ] Action: Send to a worker (not for now)
+- [ ] (set on 2024-11) GUI?
 
 ## License
 This project is licensed under [The Unlicense](https://choosealicense.com/licenses/unlicense/)
